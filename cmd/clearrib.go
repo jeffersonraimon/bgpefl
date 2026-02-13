@@ -13,10 +13,10 @@ var (
 	clearV4 bool
 	clearV6 bool
 	soft    bool
+	stopforce   bool
 )
 
 var clearCmd = &cobra.Command{
-	var	force bool
 	Use:   "clearrib",
 	Short: "Limpa RIB do BGP Lab",
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -33,7 +33,7 @@ var clearCmd = &cobra.Command{
 			clearV6 = true
 		}
 
-		if force {
+		if stopforce {
 			if clearV4 {
 				fmt.Println("Removendo todas rotas IPv4...")
 				gobgp.ClearRIB("ipv4")
@@ -63,7 +63,7 @@ func init() {
 	clearCmd.Flags().BoolVar(&clearV4, "ipv4", false, "Limpa apenas IPv4")
 	clearCmd.Flags().BoolVar(&clearV6, "ipv6", false, "Limpa apenas IPv6")
 	clearCmd.Flags().BoolVar(&soft, "soft", false, "Remove rota por rota (default)")
-	clearCmd.Flags().BoolVar(&force, "force", false, "Usa del all direto")
+	clearCmd.Flags().BoolVar(&stopforce, "force", false, "Usa del all direto")
 
 	rootCmd.AddCommand(clearCmd)
 }
