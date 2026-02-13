@@ -5,6 +5,10 @@ Aplicação escrita em **Go** para facilitar a criação de sessões **BGP** e a
 Ideal para simular cenários realistas de roteamento usando prefixos públicos reais sem precisar configurar manualmente centenas de rotas.
 
 ---
+<img width="877" height="873" alt="example" src="https://github.com/user-attachments/assets/10cfc09c-052c-4acd-81b0-f64b6c0cfb41" />
+
+
+
 
 ## 📦 Sobre o Projeto
 
