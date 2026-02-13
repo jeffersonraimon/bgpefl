@@ -13,10 +13,10 @@ var (
 	clearV4 bool
 	clearV6 bool
 	soft    bool
-	force   bool
 )
 
 var clearCmd = &cobra.Command{
+	var	force bool
 	Use:   "clearrib",
 	Short: "Limpa RIB do BGP Lab",
 	RunE: func(cmd *cobra.Command, args []string) error {

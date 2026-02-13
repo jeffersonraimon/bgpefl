@@ -12,13 +12,14 @@ import (
 
 var (
 	clearRIB bool
-	force    bool
 	rmInt    string
 	rmIP     string
 	rmCIDR   int
 )
 
 var stopCmd = &cobra.Command{
+	var	force bool
+	
 	Use:   "stop",
 	Short: "Para o BGP Lab",
 	RunE: func(cmd *cobra.Command, args []string) error {
