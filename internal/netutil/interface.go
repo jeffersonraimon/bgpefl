@@ -17,9 +17,9 @@ func AddIP(iface, ip string, cidr int) error {
 	var cmd *exec.Cmd
 
 	if parsed.To4() != nil {
-		cmd = exec.Command("ip", "addr", "add", fmt.Sprintf("%s/%d", ip, cidr), "dev", iface)
+		cmd = exec.Command("ip", "addr", "replace", fmt.Sprintf("%s/%d", ip, cidr), "dev", iface)
 	} else {
-		cmd = exec.Command("ip", "-6", "addr", "add", fmt.Sprintf("%s/%d", ip, cidr), "dev", iface)
+		cmd = exec.Command("ip", "-6", "addr", "replace", fmt.Sprintf("%s/%d", ip, cidr), "dev", iface)
 	}
 
 	return cmd.Run()
