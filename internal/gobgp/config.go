@@ -1,14 +1,10 @@
 package gobgp
+package system 
 
 import (
 	"fmt"
 	"os/exec"
 )
-
-func IsRunning() bool {
-    return system.IsProcessRunning("gobgpd")
-}
-
 
 func ConfigureGlobal(as uint32, routerID string) error {
 	cmd := exec.Command("gobgp", "global", "as", fmt.Sprint(as), "router-id", routerID)

@@ -6,6 +6,7 @@ import (
 
 	"github.com/jeffersonraimon/bgpefl/internal/gobgp"
 	"github.com/jeffersonraimon/bgpefl/internal/netutil"
+	"github.com/jeffersonraimon/bgpefl/internal/system"
 
 	"github.com/spf13/cobra"
 )

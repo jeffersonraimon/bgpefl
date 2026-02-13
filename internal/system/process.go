@@ -9,6 +9,10 @@ import (
 	"time"
 )
 
+func IsRunning() bool {
+    return system.IsProcessRunning("gobgpd")
+}
+
 
 func IsProcessRunning(name string) bool {
 	err := exec.Command("pgrep", name).Run()
