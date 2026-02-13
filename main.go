@@ -1,6 +1,6 @@
 package main
 
-import "bgpefl/cmd"
+import "github.com/jeffersonraimon/bgpefl"
 
 func main() {
 	cmd.Execute()
