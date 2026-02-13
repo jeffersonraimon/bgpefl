@@ -2,6 +2,7 @@ package irr
 
 import (
 	"fmt"
+	"io"
 	"net"
 )
 
@@ -20,11 +21,11 @@ func FetchPrefixes(host string, asn uint32) (string, error) {
 		return "", err
 	}
 
-	buf := make([]byte, 1024*1024)
-	n, err := conn.Read(buf)
+	// 🔥 Lê até EOF
+	response, err := io.ReadAll(conn)
 	if err != nil {
 		return "", err
 	}
 
-	return string(buf[:n]), nil
+	return string(response), nil
 }
