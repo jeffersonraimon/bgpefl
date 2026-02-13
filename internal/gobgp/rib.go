@@ -60,7 +60,7 @@ func GetRIB(family string) ([]string, error) {
 }
 
 func ClearRIB(family string) error {
-	return exec.Command("gobgp", "global", "rib", "del", "all", "-a", family).Run()
+	return exec.Command("gobgp", "global", "rib", "del", "all").Run()
 }
 
 func GetRIBJSON(family string) ([]RibEntry, error) {
