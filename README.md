@@ -191,7 +191,7 @@ bgpefl init ...
 
 Gerar prefixos:
 ```bash
-bgpefl gen --as <ASN>
+bgpefl gen --as <ASN> --limit 20
 ```
 
 Verificar status:
