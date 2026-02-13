@@ -11,10 +11,10 @@ import (
 
 var statusCmd = &cobra.Command{
 	Use:   "status",
-	Short: "Mostra status do BGP Lab",
+	Short: "Mostra status do BGPEFL",
 	RunE: func(cmd *cobra.Command, args []string) error {
 
-		fmt.Println("========== BGP LAB STATUS ==========")
+		fmt.Println("========== BGPEFL STATUS ==========")
 
 		running := system.IsProcessRunning("gobgpd")
 

@@ -34,7 +34,7 @@ root@kvm:~# cat bgp-lab-gen.sh
 #!/bin/bash
 
 # ==============================
-#        BGP LAB GENERATOR
+#        BGPEFL GENERATOR
 # ==============================
 
 usage() {
@@ -212,7 +212,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-echo "🛑 Parando BGP Lab..."
+echo "🛑 Parando BGPEFL..."
 
 # Remove neighbors
 echo "Removendo neighbors..."
@@ -264,7 +264,7 @@ else
 fi
 
 echo ""
-echo "✅ BGP Lab parado."
+echo "✅ BGPEFL parado."
 
 
 root@kvm:~# cat bgp-lab-clearrib.sh 
@@ -376,7 +376,7 @@ echo "✅ RIB limpa."
 root@kvm:~# cat bgp-lab-status.sh 
 #!/bin/bash
 
-echo "========== BGP LAB STATUS =========="
+echo "========== BGPEFL STATUS =========="
 
 # Processo
 if pgrep gobgpd >/dev/null; then

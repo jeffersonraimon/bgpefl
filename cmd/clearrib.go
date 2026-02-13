@@ -18,7 +18,7 @@ var (
 
 var clearCmd = &cobra.Command{
 	Use:   "clearrib",
-	Short: "Limpa RIB do BGP Lab",
+	Short: "Limpa RIB do BGPEFL",
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		if !system.IsProcessRunning("gobgpd") {

@@ -20,10 +20,10 @@ var (
 
 var stopCmd = &cobra.Command{
 	Use:   "stop",
-	Short: "Para o BGP Lab",
+	Short: "Para o BGPEFL",
 	RunE: func(cmd *cobra.Command, args []string) error {
 
-		fmt.Println("🛑 Parando BGP Lab...")
+		fmt.Println("🛑 Parando BGPEFL...")
 
 		// Remove neighbors
 		fmt.Println("Removendo neighbors...")
@@ -57,7 +57,7 @@ var stopCmd = &cobra.Command{
 			fmt.Println(err)
 		}
 
-		fmt.Println("\n✅ BGP Lab parado.")
+		fmt.Println("\n✅ BGPEFL parado.")
 		return nil
 	},
 }
