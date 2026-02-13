@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"github.com/spf13/cobra"
-	"bgpefl/cmd"
+	"github.com/jeffersonraimon/bgpefl/cmd"
 )
 
 var rootCmd = &cobra.Command{
