@@ -1,0 +1,419 @@
+root@kvm:~# cat bgp-lab-init.sh 
+#!/bin/bash
+
+if [ "$#" -lt 6 ]; then
+    echo "Uso: $0 <INT> <IP> <CIDR> <NEIGHBOR_IP> <REMOTE_AS> <LOCAL_AS>"
+    exit 1
+fi
+
+INT=$1
+IP=$2
+CIDR=$3
+NEIGHBOR_IP=$4
+REMOTE_AS=$5
+LOCAL_AS=$6
+
+gobgpd &
+sleep 2
+
+gobgp global as $LOCAL_AS router-id 10.99.99.99 
+
+if [[ $IP == *:* ]]; then
+    ip -6 addr add $IP/$CIDR dev $INT
+else
+    ip addr add $IP/$CIDR dev $INT
+fi
+
+gobgp neighbor add $NEIGHBOR_IP as $REMOTE_AS
+
+echo "Sessão BGP configurada."
+
+
+
+root@kvm:~# cat bgp-lab-gen.sh 
+#!/bin/bash
+
+# ==============================
+#        BGP LAB GENERATOR
+# ==============================
+
+usage() {
+cat << EOF
+Uso:
+  bgp-lab-gen --as ASN [opções]
+
+Obrigatório:
+  --as ASN               AS para buscar prefixos
+
+Opcionais:
+  --limit N              Limite total de rotas
+  --limit-v4 N           Limite apenas IPv4
+  --limit-v6 N           Limite apenas IPv6
+  --only-v4              Apenas IPv4
+  --only-v6              Apenas IPv6
+  --min-v4 /XX           Prefixo mínimo IPv4 (ex: 24)
+  --min-v6 /XX           Prefixo mínimo IPv6 (ex: 48)
+  --dry-run              Não adiciona no gobgp, apenas mostra
+  --irr HOST             IRR server (default: whois.radb.net)
+
+Exemplo:
+  bgp-lab-gen --as 15169 --limit 50
+EOF
+exit 1
+}
+
+# Defaults
+IRR="whois.radb.net"
+DRYRUN=0
+
+# Parse argumentos
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --as) TARGET_AS="$2"; shift 2 ;;
+        --limit) LIMIT="$2"; shift 2 ;;
+        --limit-v4) LIMIT_V4="$2"; shift 2 ;;
+        --limit-v6) LIMIT_V6="$2"; shift 2 ;;
+        --only-v4) ONLY_V4=1; shift ;;
+        --only-v6) ONLY_V6=1; shift ;;
+        --min-v4) MIN_V4="$2"; shift 2 ;;
+        --min-v6) MIN_V6="$2"; shift 2 ;;
+        --dry-run) DRYRUN=1; shift ;;
+        --irr) IRR="$2"; shift 2 ;;
+        *) usage ;;
+    esac
+done
+
+[ -z "$TARGET_AS" ] && usage
+
+echo "🔎 Buscando prefixos do AS$TARGET_AS em $IRR..."
+
+PREFIXES=$(whois -h $IRR -- "-i origin AS$TARGET_AS" \
+| grep -E "^route:|^route6:" \
+| awk '{print $2}' \
+| sort -u)
+
+[ -z "$PREFIXES" ] && echo "Nenhum prefixo encontrado." && exit 1
+
+V4_COUNT=0
+V6_COUNT=0
+TOTAL=0
+
+echo ""
+echo "🚀 Processando rotas..."
+echo ""
+
+for PREFIX in $PREFIXES; do
+
+    FAMILY="v4"
+    MASK=$(echo $PREFIX | cut -d/ -f2)
+
+    if [[ $PREFIX == *:* ]]; then
+        FAMILY="v6"
+    fi
+
+    # Filtros only-v4 / only-v6
+    [[ $ONLY_V4 == 1 && $FAMILY == "v6" ]] && continue
+    [[ $ONLY_V6 == 1 && $FAMILY == "v4" ]] && continue
+
+    # Filtro min prefix
+    if [[ $FAMILY == "v4" && -n "$MIN_V4" && "$MASK" -lt "$MIN_V4" ]]; then
+        continue
+    fi
+
+    if [[ $FAMILY == "v6" && -n "$MIN_V6" && "$MASK" -lt "$MIN_V6" ]]; then
+        continue
+    fi
+
+    # Limites separados
+    if [[ $FAMILY == "v4" && -n "$LIMIT_V4" && "$V4_COUNT" -ge "$LIMIT_V4" ]]; then
+        continue
+    fi
+
+    if [[ $FAMILY == "v6" && -n "$LIMIT_V6" && "$V6_COUNT" -ge "$LIMIT_V6" ]]; then
+        continue
+    fi
+
+    # Limite total
+    if [[ -n "$LIMIT" && "$TOTAL" -ge "$LIMIT" ]]; then
+        echo "⚠️  Limite total atingido ($LIMIT)"
+        break
+    fi
+
+    if [[ $DRYRUN -eq 1 ]]; then
+        echo "[DRY] $PREFIX"
+    else
+        if [[ $FAMILY == "v4" ]]; then
+            gobgp global rib add -a ipv4 $PREFIX 2>/dev/null
+        else
+            gobgp global rib add -a ipv6 $PREFIX 2>/dev/null
+        fi
+    fi
+
+    [[ $FAMILY == "v4" ]] && ((V4_COUNT++))
+    [[ $FAMILY == "v6" ]] && ((V6_COUNT++))
+    ((TOTAL++))
+
+done
+
+echo ""
+echo "========== RESUMO =========="
+echo "IPv4: $V4_COUNT"
+echo "IPv6: $V6_COUNT"
+echo "Total: $TOTAL"
+echo "============================"
+
+
+
+
+root@kvm:~# cat bgp-lab-stop.sh 
+#!/bin/bash
+
+usage() {
+cat << EOF
+Uso:
+  bgp-lab-stop [opções]
+
+Opções:
+  --clear-rib          Remove todas as rotas do gobgp
+  --remove-ip INT IP CIDR
+                       Remove IP da interface
+  --force              Mata processo mesmo se gobgp não responder
+
+Exemplos:
+  bgp-lab-stop
+  bgp-lab-stop --clear-rib
+  bgp-lab-stop --remove-ip eth0 192.168.1.1 24
+EOF
+exit 1
+}
+
+CLEAR_RIB=0
+FORCE=0
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --clear-rib)
+            CLEAR_RIB=1
+            shift
+            ;;
+        --remove-ip)
+            INT=$2
+            IP=$3
+            CIDR=$4
+            shift 4
+            ;;
+        --force)
+            FORCE=1
+            shift
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+
+echo "🛑 Parando BGP Lab..."
+
+# Remove neighbors
+echo "Removendo neighbors..."
+NEIGHBORS=$(gobgp neighbor 2>/dev/null | awk '/Neighbor/{print $2}')
+
+for N in $NEIGHBORS; do
+    echo "Removendo neighbor $N"
+    gobgp neighbor del $N 2>/dev/null
+done
+
+# Limpa RIB se solicitado
+if [[ $CLEAR_RIB -eq 1 ]]; then
+    echo "Limpando RIB IPv4..."
+    gobgp global rib del all -a ipv4 2>/dev/null
+    echo "Limpando RIB IPv6..."
+    gobgp global rib del all -a ipv6 2>/dev/null
+fi
+
+# Remove IP se solicitado
+if [[ -n "$INT" && -n "$IP" && -n "$CIDR" ]]; then
+    echo "Removendo IP $IP/$CIDR da interface $INT"
+
+    if [[ $IP == *:* ]]; then
+        ip -6 addr del $IP/$CIDR dev $INT 2>/dev/null
+    else
+        ip addr del $IP/$CIDR dev $INT 2>/dev/null
+    fi
+fi
+
+# Mata gobgpd
+echo "Finalizando gobgpd..."
+
+PID=$(pgrep gobgpd)
+
+if [[ -n "$PID" ]]; then
+    kill $PID 2>/dev/null
+    sleep 1
+
+    if pgrep gobgpd >/dev/null; then
+        if [[ $FORCE -eq 1 ]]; then
+            echo "Forçando kill..."
+            kill -9 $PID 2>/dev/null
+        else
+            echo "gobgpd ainda está rodando. Use --force se necessário."
+        fi
+    fi
+else
+    echo "gobgpd não estava rodando."
+fi
+
+echo ""
+echo "✅ BGP Lab parado."
+
+
+root@kvm:~# cat bgp-lab-clearrib.sh 
+#!/bin/bash
+
+usage() {
+cat << EOF
+Uso:
+  bgp-lab-clear-rib [opções]
+
+Opções:
+  --ipv4       Limpa apenas IPv4
+  --ipv6       Limpa apenas IPv6
+  --soft       Remove rota por rota (mais seguro - default)
+  --force      Usa del all direto (mais rápido)
+
+Exemplos:
+  bgp-lab-clear-rib
+  bgp-lab-clear-rib --ipv4
+  bgp-lab-clear-rib --ipv6
+  bgp-lab-clear-rib --force
+EOF
+exit 1
+}
+
+CLEAR_V4=1
+CLEAR_V6=1
+SOFT=0
+FORCE=0
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --ipv4)
+            CLEAR_V6=0
+            shift
+            ;;
+        --ipv6)
+            CLEAR_V4=0
+            shift
+            ;;
+        --soft)
+            SOFT=1
+            shift
+            ;;
+        --force)
+            FORCE=1
+            shift
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+
+if ! pgrep gobgpd >/dev/null; then
+    echo "�com: apt install jq"
+    exit 1
+fi
+
+echo "🧹 Limpando RIB..."
+
+# =========================
+# MODO FORCE (mais rápido)
+# =========================
+if [[ $FORCE -eq 1 ]]; then
+
+    if [[ $CLEAR_V4 -eq 1 ]]; then
+        echo "Removendo todas rotas IPv4..."
+        gobgp global rib del all -a ipv4 2>/dev/null
+    fi
+
+    if [[ $CLEAR_V6 -eq 1 ]]; then
+        echo "Removendo todas rotas IPv6..."
+        gobgp global rib del all -a ipv6 2>/dev/null
+    fi
+
+else
+
+# =========================
+# MODO SOFT (rota por rota)
+# =========================
+
+    if [[ $CLEAR_V4 -eq 1 ]]; then
+        echo "Removendo rotas IPv4..."
+        gobgp global rib -a ipv4 -j | \
+        jq -r '.. | .prefix? // empty' | \
+        sort -u | \
+        while read PREFIX; do
+            [[ -n "$PREFIX" ]] && \
+            gobgp global rib del -a ipv4 "$PREFIX" 2>/dev/null
+        done
+    fi
+
+    if [[ $CLEAR_V6 -eq 1 ]]; then
+        echo "Removendo rotas IPv6..."
+        gobgp global rib -a ipv6 -j | \
+        jq -r '.. | .prefix? // empty' | \
+        sort -u | \
+        while read PREFIX; do
+            [[ -n "$PREFIX" ]] && \
+            gobgp global rib del -a ipv6 "$PREFIX" 2>/dev/null
+        done
+    fi
+fi
+
+echo "✅ RIB limpa."
+
+
+root@kvm:~# cat bgp-lab-status.sh 
+#!/bin/bash
+
+echo "========== BGP LAB STATUS =========="
+
+# Processo
+if pgrep gobgpd >/dev/null; then
+    echo "gobgpd: RUNNING"
+else
+    echo "gobgpd: STOPPED"
+    echo "===================================="
+    exit 0
+fi
+
+echo ""
+
+# Global config
+echo "Global config:"
+gobgp global 2>/dev/null
+
+echo ""
+
+# Neighbors
+echo "Neighbors:"
+gobgp neighbor 2>/dev/null
+
+echo ""
+
+# Contagem rotas
+V4=$(gobgp global rib -a ipv4 2>/dev/null | grep -c "Network")
+V6=$(gobgp global rib -a ipv6 2>/dev/null | grep -c "Network")
+
+echo "Rotas IPv4: $V4"
+echo "Rotas IPv6: $V6"
+
+echo ""
+echo "Preview IPv4:"
+gobgp global rib -a ipv4 2>/dev/null | head -n 7
+
+echo ""
+echo "Preview IPv6:"
+gobgp global rib -a ipv6 2>/dev/null | head -n 7
+
+echo "===================================="
