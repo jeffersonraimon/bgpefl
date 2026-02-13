@@ -27,6 +27,7 @@ Ele utiliza o **GoBGP (`gobgpd`)** como daemon BGP.
 ## 🔧 Requisitos
 
 - Linux
+- Golang instalado (1.23+)
 - GoBGP instalado (`gobgpd`)
 - Permissões root (para manipulação de IP/interface)
 - Conectividade com servidor IRR (padrão: `whois.radb.net`)
