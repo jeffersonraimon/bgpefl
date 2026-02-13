@@ -12,7 +12,7 @@ import (
 
 var (
 	clearRIB bool
-	stopforce    bool
+	stopforce2    bool
 	rmInt    string
 	rmIP     string
 	rmCIDR   int
@@ -52,7 +52,7 @@ var stopCmd = &cobra.Command{
 		// Stop daemon
 		fmt.Println("Finalizando gobgpd...")
 
-		err := system.StopProcess("gobgpd", stopforce)
+		err := system.StopProcess("gobgpd", stopforce2)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -65,7 +65,7 @@ var stopCmd = &cobra.Command{
 func init() {
 
 	stopCmd.Flags().BoolVar(&clearRIB, "clear-rib", false, "Remove todas as rotas")
-	stopCmd.Flags().BoolVar(&stopforce, "force", false, "Força kill")
+	stopCmd.Flags().BoolVar(&stopforce2, "force", false, "Força kill")
 	stopCmd.Flags().StringVar(&rmInt, "remove-int", "", "Interface para remover IP")
 	stopCmd.Flags().StringVar(&rmIP, "remove-ip", "", "IP a remover")
 	stopCmd.Flags().IntVar(&rmCIDR, "remove-cidr", 0, "CIDR do IP")
