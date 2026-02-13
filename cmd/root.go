@@ -7,6 +7,9 @@ var rootCmd = &cobra.Command{
 	Short: "BGP Easy for Labs",
 }
 
+func init() {
+	rootCmd.CompletionOptions.DisableDefaultCmd = true
+}
 func Execute() error {
 	return rootCmd.Execute()
 }
