@@ -5,6 +5,17 @@ import (
 	"os/exec"
 )
 
+func IsRunning() bool {
+    return system.IsProcessRunning("gobgpd")
+}
+
+currentAS, _ := gobgp.GetGlobalAS()
+
+if running && currentAS != localAS {
+    return fmt.Errorf("gobgpd já está rodando com AS %d", currentAS)
+}
+
+
 func ConfigureGlobal(as uint32, routerID string) error {
 	cmd := exec.Command("gobgp", "global", "as", fmt.Sprint(as), "router-id", routerID)
 	return cmd.Run()
