@@ -1,5 +1,4 @@
 package gobgp
-package system 
 
 import (
 	"fmt"
