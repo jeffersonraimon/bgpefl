@@ -38,6 +38,7 @@ Ele utiliza o **GoBGP (`gobgpd`)** como daemon BGP.
 git clone https://github.com/jeffersonraimon/bgpefl.git
 cd bgpefl
 go build -o bgpefl
+cp bgpefl /usr/bin/bgpefl
 ```
 
 ##  📌 Uso Geral
