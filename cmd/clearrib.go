@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"bgpefl/internal/gobgp"
-	"bgpefl/internal/system"
+	"github.com/jeffersonraimon/bgpefl/internal/gobgp"
+	"github.com/jeffersonraimon/bgpefl/internal/system"
 
 	"github.com/spf13/cobra"
 )

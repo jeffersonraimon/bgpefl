@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net"
 
-	"bgpefl/internal/gobgp"
-	"bgpefl/internal/netutil"
+	"github.com/jeffersonraimon/bgpefl/internal/gobgp"
+	"github.com/jeffersonraimon/bgpefl/internal/netutil"
 
 	"github.com/spf13/cobra"
 )

@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 
-	"bgpefl/internal/filter"
-	"bgpefl/internal/gobgp"
-	"bgpefl/internal/irr"
+	"github.com/jeffersonraimon/bgpefl/internal/filter"
+	"github.com/jeffersonraimon/bgpefl/internal/gobgp"
+	"github.com/jeffersonraimon/bgpefl/internal/irr"
 
 	"github.com/spf13/cobra"
 )
