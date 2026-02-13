@@ -110,6 +110,7 @@ Flags:
 |--min-v6	|Prefixo mínimo IPv6|
 |--only-v4	|Apenas IPv4|
 |--only-v6	|Apenas IPv6|
+
 Exemplo:
 ```bash
 bgpefl gen --as 15169 --limit 100
