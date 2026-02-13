@@ -48,12 +48,18 @@ var initCmd = &cobra.Command{
 			routerID = ipAddr
 		}
 
-		if err := gobgp.StartDaemon(); err != nil {
-			return fmt.Errorf("erro ao iniciar gobgpd: %v", err)
-		}
+        running := gobgp.IsRunning()
 
-		if err := gobgp.ConfigureGlobal(localAS, routerID); err != nil {
-			return fmt.Errorf("erro ao configurar global: %v", err)
+		if !running {
+		    if err := gobgp.StartDaemon(); err != nil {
+		        return fmt.Errorf("erro ao iniciar gobgpd: %v", err)
+		    }
+		
+		    if err := gobgp.ConfigureGlobal(localAS, routerID); err != nil {
+		        return fmt.Errorf("erro ao configurar global: %v", err)
+		    }
+		} else {
+		    fmt.Println("ℹ️ gobgpd já está rodando, pulando configuração global")
 		}
 
 		if err := netutil.AddIP(iface, ipAddr, cidr); err != nil {
