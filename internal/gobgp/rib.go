@@ -16,10 +16,10 @@ type RibEntry struct {
 func AddPrefix(prefix string) error {
 
 	if isIPv4(prefix) {
-		return exec.Command("gobgp", "global", "rib", "add", "-a", "ipv4", prefix).Run()
+		return exec.Command("gobgp", "global", "rib", "-a", "ipv4", "add", prefix).Run()
 	}
 
-	return exec.Command("gobgp", "global", "rib", "add", "-a", "ipv6", prefix).Run()
+	return exec.Command("gobgp", "global", "rib", "-a", "ipv6", "add", prefix).Run()
 }
 
 func isIPv4(prefix string) bool {
@@ -101,8 +101,8 @@ func ClearRIBSoft(family string) error {
 
 		seen[e.Prefix] = true
 
-		exec.Command("gobgp", "global", "rib", "del",
-			"-a", family,
+		exec.Command("gobgp", "global", "rib", "-a",
+			family, "del",
 			e.Prefix).Run()
 	}
 
