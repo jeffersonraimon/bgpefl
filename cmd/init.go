@@ -50,6 +50,12 @@ var initCmd = &cobra.Command{
 
         running := gobgp.IsRunning()
 
+		currentAS, _ := gobgp.GetGlobalAS()
+
+		if running && currentAS != localAS {
+		    return fmt.Errorf("gobgpd já está rodando com AS %d", currentAS)
+		}
+
 		if !running {
 		    if err := gobgp.StartDaemon(); err != nil {
 		        return fmt.Errorf("erro ao iniciar gobgpd: %v", err)
