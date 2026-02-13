@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"os/exec"
+	"strings"
 )
 
 func AddIP(iface, ip string, cidr int) error {
