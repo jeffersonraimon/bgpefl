@@ -1,103 +1,89 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
-	"log"
 	"net"
-	"time"
+
+	"bgpefl/internal/gobgp"
+	"bgpefl/internal/netutil"
 
 	"github.com/spf13/cobra"
-	"github.com/vishvananda/netlink"
-	api "github.com/osrg/gobgp/v3/api"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 )
 
-var routerID string
+var (
+	iface     string
+	ipAddr    string
+	cidr      int
+	neighbor  string
+	remoteAS  uint32
+	localAS   uint32
+	routerID  string
+)
 
 var initCmd = &cobra.Command{
-	Use:   "init [interface] [ip] [cidr] [neighbor_ip] [remote_as] [local_as]",
-	Short: "Configura a interface de rede e a sessão BGP inicial",
-	Args:  cobra.ExactArgs(6),
-	Run: func(cmd *cobra.Command, args []string) {
-		ifaceName := args[0]
-		ipAddr := args[1]
-		cidr := args[2]
-		neighborIP := args[3]
-		remoteAS := args[4]
-		localAS := args[5]
+	Use:   "init",
+	Short: "Inicializa sessão BGP para lab",
+	RunE: func(cmd *cobra.Command, args []string) error {
 
-		// 1. Configurar IP na Interface (Equivalente ao 'ip addr add')
-		err := configureInterface(ifaceName, ipAddr, cidr)
-		if err != nil {
-			log.Fatalf("❌ Erro ao configurar interface: %v", err)
-		}
-		fmt.Printf("✅ IP %s/%s configurado na interface %s\n", ipAddr, cidr, ifaceName)
-
-		// 2. Conectar ao GoBGP via gRPC (Assume que o gobgpd já está rodando ou foi iniciado)
-		// Dica: Você pode usar o pacote 'os/exec' para rodar o 'gobgpd &' se desejar
-		ctx := context.Background()
-		conn, err := grpc.DialContext(ctx, "localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
-		if err != nil {
-			log.Fatalf("❌ Erro ao conectar ao GoBGP: %v", err)
-		}
-		defer conn.Close()
-		client := api.NewGobgpServiceClient(conn)
-
-		// 3. Configuração Global (AS e Router-ID)
-		_, err = client.StartBgp(ctx, &api.StartBgpRequest{
-			Global: &api.Global{
-				As:       parseUint32(localAS),
-				RouterId: routerID,
-			},
-		})
-		if err != nil {
-			fmt.Printf("⚠️ Aviso: GoBGP já iniciado ou erro na config: %v\n", err)
-		} else {
-			fmt.Printf("✅ GoBGP Global configurado (AS: %s, Router-ID: %s)\n", localAS, routerID)
+		// 🔎 Validação básica
+		if localAS == 0 || remoteAS == 0 {
+			return fmt.Errorf("AS não pode ser 0")
 		}
 
-		// 4. Adicionar Neighbor
-		_, err = client.AddPeer(ctx, &api.AddPeerRequest{
-			Peer: &api.Peer{
-				Conf: &api.PeerConf{
-					NeighborAddress: neighborIP,
-					PeerAs:          parseUint32(remoteAS),
-				},
-			},
-		})
-		if err != nil {
-			log.Fatalf("❌ Erro ao adicionar neighbor: %v", err)
+		if net.ParseIP(neighbor) == nil {
+			return fmt.Errorf("neighbor inválido")
 		}
 
-		fmt.Printf("🚀 Sessão BGP com neighbor %s (AS %s) configurada com sucesso!\n", neighborIP, remoteAS)
+		// 🔥 Router-ID opcional com fallback
+		if routerID == "" {
+			ipParsed := net.ParseIP(ipAddr)
+			if ipParsed == nil {
+				return fmt.Errorf("IP inválido")
+			}
+
+			if ipParsed.To4() == nil {
+				return fmt.Errorf("IPv6 exige --router-id manual (router-id precisa ser IPv4)")
+			}
+
+			routerID = ipAddr
+		}
+
+		if err := gobgp.StartDaemon(); err != nil {
+			return fmt.Errorf("erro ao iniciar gobgpd: %v", err)
+		}
+
+		if err := gobgp.ConfigureGlobal(localAS, routerID); err != nil {
+			return fmt.Errorf("erro ao configurar global: %v", err)
+		}
+
+		if err := netutil.AddIP(iface, ipAddr, cidr); err != nil {
+			return fmt.Errorf("erro ao configurar IP: %v", err)
+		}
+
+		if err := gobgp.AddNeighbor(neighbor, remoteAS); err != nil {
+			return fmt.Errorf("erro ao adicionar neighbor: %v", err)
+		}
+
+		fmt.Println("✅ Sessão BGP configurada.")
+		return nil
 	},
 }
 
-// Função auxiliar para configurar IP usando Netlink (mais performático que chamar shell)
-func configureInterface(name, ipStr, maskStr string) error {
-	link, err := netlink.LinkByName(name)
-	if err != nil {
-		return err
-	}
-
-	addr, err := netlink.ParseAddr(fmt.Sprintf("%s/%s", ipStr, maskStr))
-	if err != nil {
-		return err
-	}
-
-	return netlink.AddrAdd(link, addr)
-}
-
-// Helper para converter string em uint32
-func parseUint32(s string) uint32 {
-	var res uint32
-	fmt.Sscanf(s, "%d", &res)
-	return res
-}
-
 func init() {
-	// Define a flag opcional para router-id
-	initCmd.Flags().StringVarP(&routerID, "router-id", "r", "10.99.99.99", "Router ID do BGP")
+	initCmd.Flags().StringVar(&iface, "int", "", "Interface")
+	initCmd.Flags().StringVar(&ipAddr, "ip", "", "IP address")
+	initCmd.Flags().IntVar(&cidr, "cidr", 0, "CIDR mask")
+	initCmd.Flags().StringVar(&neighbor, "neighbor", "", "Neighbor IP")
+	initCmd.Flags().Uint32Var(&remoteAS, "remote-as", 0, "Remote AS")
+	initCmd.Flags().Uint32Var(&localAS, "local-as", 0, "Local AS")
+	initCmd.Flags().StringVar(&routerID, "router-id", "", "Router ID (optional)")
+
+	initCmd.MarkFlagRequired("int")
+	initCmd.MarkFlagRequired("ip")
+	initCmd.MarkFlagRequired("cidr")
+	initCmd.MarkFlagRequired("neighbor")
+	initCmd.MarkFlagRequired("remote-as")
+	initCmd.MarkFlagRequired("local-as")
+
+	rootCmd.AddCommand(initCmd)
 }
