@@ -39,11 +39,24 @@ Ele utiliza o **GoBGP (`gobgpd`)** como daemon BGP.
 
 ## 🚀 Instalação
 
+Inicie no EVE/PNETLAB um node com Linux (debian/ubuntu por exemplo) a com 2 interfaces, 1 para a Internet e a outra para a sessão BGP. 
+Vocẽ pode compilar ou utilizar o binário já compilado.
+
+## Compilar
+
 ```bash
 git clone https://github.com/jeffersonraimon/bgpefl.git
 cd bgpefl
 go build -o bgpefl
 cp bgpefl /usr/bin/bgpefl
+```
+## Binário já pronto (necessário instalar o GoBGPD)
+
+```bash
+wget https://github.com/jeffersonraimon/bgpefl/releases/download/v1.0/bgpefl
+apt install gobgpd
+chmod +x bgpefl
+mv bgpefl /usr/bin/bgpefl
 ```
 
 ##  📌 Uso Geral
