@@ -17,12 +17,27 @@ func AddIP(iface, ip string, cidr int) error {
 	var cmd *exec.Cmd
 
 	if parsed.To4() != nil {
-		cmd = exec.Command("ip", "addr", "replace", fmt.Sprintf("%s/%d", ip, cidr), "dev", iface)
+		cmd = exec.Command("ip", "addr", "replace",
+			fmt.Sprintf("%s/%d", ip, cidr),
+			"dev", iface)
 	} else {
-		cmd = exec.Command("ip", "-6", "addr", "replace", fmt.Sprintf("%s/%d", ip, cidr), "dev", iface)
+		cmd = exec.Command("ip", "-6", "addr", "replace",
+			fmt.Sprintf("%s/%d", ip, cidr),
+			"dev", iface)
 	}
 
-	return cmd.Run()
+	// Adiciona / substitui o IP
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+
+	// Sobe a interface
+	upCmd := exec.Command("ip", "link", "set", iface, "up")
+	if err := upCmd.Run(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func RemoveIP(iface, ip string, cidr int) error {
