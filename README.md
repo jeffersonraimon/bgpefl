@@ -39,7 +39,7 @@ Ele utiliza o **GoBGP (`gobgpd`)** como daemon BGP.
 
 ## 🚀 Instalação
 
-Inicie no EVE/PNETLAB um node com Linux (debian/ubuntu por exemplo) a com 2 interfaces, 1 para a Internet e a outra para a sessão BGP. 
+Inicie no EVE/PNETLAB um node com Linux (debian/ubuntu por exemplo) com no mínimo 2 interfaces, 1 para a Internet e a outra para a sessão BGP. 
 Vocẽ pode compilar ou utilizar o binário já compilado.
 
 ## Compilar
