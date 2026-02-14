@@ -40,7 +40,7 @@ Ele utiliza o **GoBGP (`gobgpd`)** como daemon BGP.
 ## 🚀 Instalação
 
 Inicie no EVE/PNETLAB um node com Linux (debian/ubuntu por exemplo) com no mínimo 2 interfaces, 1 para a Internet e a outra para a sessão BGP. 
-Vocẽ pode compilar ou utilizar o binário já compilado.
+Vocẽ pode compilar, utilizar o binário já compilado ou usar o BGEPFL Appliance.
 
 ## Compilar
 
@@ -58,6 +58,15 @@ apt install gobgpd
 chmod +x bgpefl
 mv bgpefl /usr/bin/bgpefl
 ```
+## BGPEFL Appliance
+
+Imagem qemu leve do Alpine 3.20.3 já com o BGPEFL v1.0.1 instalado e pronto para uso
+
+Link: [Google Drive](https://drive.google.com/file/d/1EllxXO-Ns92-RRCQBzwQ-_rA0RKHHoYf/view?usp=sharing)
+
+- Adicione a pasta em /opt/unetlab/addons/qemu/ 
+- O yml em /opt/unetlab/html/templates/amd ou /opt/unetlab/html/templates/intel
+- Dê permissão com /opt/unetlab/wrappers/unl_wrapper -a fixpermissions
 
 ##  📌 Uso Geral
 ```bash
