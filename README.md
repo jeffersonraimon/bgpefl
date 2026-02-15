@@ -11,7 +11,7 @@ Ideal para simular cenários realistas de roteamento usando prefixos públicos r
 ## 🚀 Demonstração
 
 <p align="center">
-  <img src="docs/example.gif" alt="Demo do sistema" width="700">
+  <img src="docs/example.gif" alt="Demo do BGPEFL" width="700">
 </p>
 
 ## 📦 Sobre o Projeto

@@ -9,7 +9,7 @@ Ideal for simulating realistic routing scenarios using real public prefixes with
 ## 🚀 Demonstration
 
 <p align="center">
-  <img src="example.gif" alt="Demo do sistema" width="700">
+  <img src="example.gif" alt="BGPEFL Demo" width="700">
 </p>
 
 ## 📦 About the Project
