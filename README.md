@@ -68,7 +68,7 @@ mv bgpefl /usr/bin/bgpefl
 ```
 ## BGPEFL Appliance
 
-Imagem qemu leve do Alpine 3.20.3 já com o BGPEFL v1.0.1 instalado e pronto para uso
+Imagem qemu leve do Alpine 3.20.3 já com o BGPEFL instalado e pronto para uso
 
 ***Login:***
 `root / sem senha
