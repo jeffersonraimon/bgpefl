@@ -73,9 +73,11 @@ Imagem qemu leve do Alpine 3.20.3 já com o BGPEFL instalado e pronto para uso
 ***Login:***
 `root` / sem senha
 
-Link: [Google Drive](https://drive.google.com/drive/folders/1foE3TapBS79ivoQPwXhtTe_KKDz1Sb1K?usp=sharing)
-
 ### Como instalar
+No EVE-NG/PNETLAB Host:
+```bash
+wget https://github.com/jeffersonraimon/bgpefl/releases/download/v1.0.2/bgpefl-appliance_v1.0.2.zip
+```
 - Adicione a pasta em `opt/unetlab/addons/qemu/` 
 - O `.yml` em `pt/unetlab/html/templates/amd` ou `/opt/unetlab/html/templates/intel`
 - Dê permissão com `/opt/unetlab/wrappers/unl_wrapper -a fixpermissions`
