@@ -71,7 +71,7 @@ mv bgpefl /usr/bin/bgpefl
 Imagem qemu leve do Alpine 3.20.3 já com o BGPEFL instalado e pronto para uso
 
 ***Login:***
-`root / sem senha
+`root` / sem senha
 
 Link: [Google Drive](https://drive.google.com/drive/folders/1foE3TapBS79ivoQPwXhtTe_KKDz1Sb1K?usp=sharing)
 
