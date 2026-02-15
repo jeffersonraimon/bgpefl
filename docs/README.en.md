@@ -6,8 +6,11 @@ Ideal for simulating realistic routing scenarios using real public prefixes with
 
 ---
 
-<img width="877" height="873" alt="example" src="https://github.com/user-attachments/assets/10cfc09c-052c-4acd-81b0-f64b6c0cfb41" />
+## 🚀 Demonstration
 
+<p align="center">
+  <img src="example.gif" alt="Demo do sistema" width="700">
+</p>
 
 ## 📦 About the Project
 
