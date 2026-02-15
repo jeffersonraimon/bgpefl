@@ -23,17 +23,18 @@ func IsIPv4(prefix string) bool {
 
 func Apply(prefixes []string, cfg Config) []string {
 
-	var result []string
-	v4Count := 0
-	v6Count := 0
+	var v4 []string
+	var v6 []string
 
+	// Primeiro: filtra e separa
 	for _, p := range prefixes {
 
 		familyV4 := IsIPv4(p)
+
 		maskStr := strings.Split(p, "/")[1]
 		mask, _ := strconv.Atoi(maskStr)
 
-		// only-v4 / only-v6
+		// only flags
 		if cfg.OnlyV4 && !familyV4 {
 			continue
 		}
@@ -49,26 +50,45 @@ func Apply(prefixes []string, cfg Config) []string {
 			continue
 		}
 
-		// limits
-		if familyV4 && cfg.LimitV4 > 0 && v4Count >= cfg.LimitV4 {
-			continue
-		}
-		if !familyV4 && cfg.LimitV6 > 0 && v6Count >= cfg.LimitV6 {
-			continue
-		}
-
-		if cfg.Limit > 0 && len(result) >= cfg.Limit {
-			break
-		}
-
-		result = append(result, p)
-
 		if familyV4 {
-			v4Count++
+			v4 = append(v4, p)
 		} else {
-			v6Count++
+			v6 = append(v6, p)
 		}
 	}
 
-	return result
+	// Aplicar limites individuais
+	if cfg.LimitV4 > 0 && len(v4) > cfg.LimitV4 {
+		v4 = v4[:cfg.LimitV4]
+	}
+
+	if cfg.LimitV6 > 0 && len(v6) > cfg.LimitV6 {
+		v6 = v6[:cfg.LimitV6]
+	}
+
+	// Aplicar limite global proporcional
+	if cfg.Limit > 0 {
+
+		total := len(v4) + len(v6)
+
+		if total > cfg.Limit {
+
+			// proporção
+			v4Limit := int(float64(len(v4)) / float64(total) * float64(cfg.Limit))
+			v6Limit := cfg.Limit - v4Limit
+
+			if v4Limit > len(v4) {
+				v4Limit = len(v4)
+			}
+			if v6Limit > len(v6) {
+				v6Limit = len(v6)
+			}
+
+			v4 = v4[:v4Limit]
+			v6 = v6[:v6Limit]
+		}
+	}
+
+	return append(v4, v6...)
 }
+
