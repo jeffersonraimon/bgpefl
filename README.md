@@ -68,7 +68,7 @@ Imagem qemu leve do Alpine 3.20.3 já com o BGPEFL v1.0.1 instalado e pronto par
 ***Login:***
 `root / sem senha
 
-Link: [Google Drive](https://drive.google.com/file/d/1EllxXO-Ns92-RRCQBzwQ-_rA0RKHHoYf/view?usp=sharing)
+Link: [Google Drive](https://drive.google.com/drive/folders/1foE3TapBS79ivoQPwXhtTe_KKDz1Sb1K?usp=sharing)
 
 ### Como instalar
 - Adicione a pasta em `opt/unetlab/addons/qemu/` 
