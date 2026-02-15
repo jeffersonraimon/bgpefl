@@ -65,7 +65,7 @@ cp bgpefl /usr/bin/bgpefl
 ## Prebuilt Binary (GoBGP required)
 
 ```bash
-wget https://github.com/jeffersonraimon/bgpefl/releases/download/v1.0.1/bgpefl
+wget https://github.com/jeffersonraimon/bgpefl/releases/download/v1.0.2/bgpefl
 apt install gobgpd
 chmod +x bgpefl
 mv bgpefl /usr/bin/bgpefl
@@ -75,7 +75,7 @@ mv bgpefl /usr/bin/bgpefl
 
 ## BGPEFL Appliance
 
-Lightweight QEMU image based on Alpine 3.20.3 with BGPEFL v1.0.1 preinstalled and ready to use.
+Lightweight QEMU image based on Alpine 3.20.3 with BGPEFL preinstalled and ready to use.
 
 **Login:**
 `root` / no password
