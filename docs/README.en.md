@@ -77,7 +77,7 @@ Lightweight QEMU image based on Alpine 3.20.3 with BGPEFL v1.0.1 preinstalled an
 **Login:**
 `root` / no password
 
-Link: [Google Drive](https://drive.google.com/file/d/1EllxXO-Ns92-RRCQBzwQ-_rA0RKHHoYf/view?usp=sharing)
+Link: [Google Drive](https://drive.google.com/drive/folders/1foE3TapBS79ivoQPwXhtTe_KKDz1Sb1K?usp=sharing)
 
 ### Installation Steps:
 
