@@ -80,9 +80,12 @@ Lightweight QEMU image based on Alpine 3.20.3 with BGPEFL preinstalled and ready
 **Login:**
 `root` / no password
 
-Link: [Google Drive](https://drive.google.com/drive/folders/1foE3TapBS79ivoQPwXhtTe_KKDz1Sb1K?usp=sharing)
-
 ### Installation Steps:
+
+On EVE-NG/PNETLAB Host:
+```bash
+wget https://github.com/jeffersonraimon/bgpefl/releases/download/v1.0.2/bgpefl-appliance_v1.0.2.zip
+```
 
 * Add the folder to:
   `/opt/unetlab/addons/qemu/`
