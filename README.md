@@ -1,14 +1,13 @@
 # BGPEFL – BGP Easy for Labs
 
+[Read in 🇺🇸 English](/docs/README.en.md)
+
 Aplicação escrita em **Go** para facilitar a criação de sessões **BGP** e a injeção de prefixos reais de um ASN (via IRR) em ambientes de laboratório como **EVE-NG** e **PnetLab**.
 
 Ideal para simular cenários realistas de roteamento usando prefixos públicos reais sem precisar configurar manualmente centenas de rotas.
 
 ---
 <img width="877" height="873" alt="example" src="https://github.com/user-attachments/assets/10cfc09c-052c-4acd-81b0-f64b6c0cfb41" />
-
-
-
 
 ## 📦 Sobre o Projeto
 
@@ -62,13 +61,14 @@ mv bgpefl /usr/bin/bgpefl
 
 Imagem qemu leve do Alpine 3.20.3 já com o BGPEFL v1.0.1 instalado e pronto para uso
 
-Login: root / sem senha
+***Login:***
+`root / sem senha
 
 Link: [Google Drive](https://drive.google.com/file/d/1EllxXO-Ns92-RRCQBzwQ-_rA0RKHHoYf/view?usp=sharing)
 
-- Adicione a pasta em /opt/unetlab/addons/qemu/ 
-- O yml em /opt/unetlab/html/templates/amd ou /opt/unetlab/html/templates/intel
-- Dê permissão com /opt/unetlab/wrappers/unl_wrapper -a fixpermissions
+- Adicione a pasta em `opt/unetlab/addons/qemu/` 
+- O yml em `pt/unetlab/html/templates/amd` ou `/opt/unetlab/html/templates/intel`
+- Dê permissão com `/opt/unetlab/wrappers/unl_wrapper -a fixpermissions`
 
 ##  📌 Uso Geral
 ```bash
