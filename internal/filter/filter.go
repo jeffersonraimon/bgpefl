@@ -68,25 +68,50 @@ func Apply(prefixes []string, cfg Config) []string {
 
 	// Aplicar limite global proporcional
 	if cfg.Limit > 0 {
-
-		total := len(v4) + len(v6)
-
-		if total > cfg.Limit {
-
-			// proporção
-			v4Limit := int(float64(len(v4)) / float64(total) * float64(cfg.Limit))
-			v6Limit := cfg.Limit - v4Limit
-
-			if v4Limit > len(v4) {
-				v4Limit = len(v4)
-			}
-			if v6Limit > len(v6) {
-				v6Limit = len(v6)
-			}
-
-			v4 = v4[:v4Limit]
-			v6 = v6[:v6Limit]
-		}
+	
+	    half := cfg.Limit / 2
+	
+	    // Tentativa inicial 50/50
+	    v4Limit := half
+	    v6Limit := cfg.Limit - half
+	
+	    // Ajusta se não houver suficiente
+	    if v4Limit > len(v4) {
+	        v4Limit = len(v4)
+	    }
+	    if v6Limit > len(v6) {
+	        v6Limit = len(v6)
+	    }
+	
+	    totalSelected := v4Limit + v6Limit
+	
+	    // Se ainda não atingiu o limite, redistribui sobra
+	    if totalSelected < cfg.Limit {
+		
+	        remaining := cfg.Limit - totalSelected
+		
+	        // Primeiro tenta completar com IPv4
+	        if v4Limit < len(v4) {
+	            extra := len(v4) - v4Limit
+	            if extra > remaining {
+	                extra = remaining
+	            }
+	            v4Limit += extra
+	            remaining -= extra
+	        }
+		
+	        // Depois tenta completar com IPv6
+	        if remaining > 0 && v6Limit < len(v6) {
+	            extra := len(v6) - v6Limit
+	            if extra > remaining {
+	                extra = remaining
+	            }
+	            v6Limit += extra
+	        }
+	    }
+	
+	    v4 = v4[:v4Limit]
+	    v6 = v6[:v6Limit]
 	}
 
 	return append(v4, v6...)
