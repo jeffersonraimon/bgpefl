@@ -79,7 +79,7 @@ No EVE-NG/PNETLAB Host:
 wget https://github.com/jeffersonraimon/bgpefl/releases/download/v1.0.2/bgpefl-appliance_v1.0.2.zip
 unzip bgpefl-appliance_v1.0.2.zip
 ```
-- Mova a pasta para `opt/unetlab/addons/qemu/` 
+- Mova a pasta para `/opt/unetlab/addons/qemu/` 
 - Coloque o arquivo `.yml` em `pt/unetlab/html/templates/amd` ou `/opt/unetlab/html/templates/intel`
 - Dê permissão com `/opt/unetlab/wrappers/unl_wrapper -a fixpermissions`
 
