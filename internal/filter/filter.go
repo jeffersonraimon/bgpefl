@@ -23,17 +23,18 @@ func IsIPv4(prefix string) bool {
 
 func Apply(prefixes []string, cfg Config) []string {
 
-	var result []string
-	v4Count := 0
-	v6Count := 0
+	var v4 []string
+	var v6 []string
 
+	// Primeiro: filtra e separa
 	for _, p := range prefixes {
 
 		familyV4 := IsIPv4(p)
+
 		maskStr := strings.Split(p, "/")[1]
 		mask, _ := strconv.Atoi(maskStr)
 
-		// only-v4 / only-v6
+		// only flags
 		if cfg.OnlyV4 && !familyV4 {
 			continue
 		}
@@ -49,26 +50,70 @@ func Apply(prefixes []string, cfg Config) []string {
 			continue
 		}
 
-		// limits
-		if familyV4 && cfg.LimitV4 > 0 && v4Count >= cfg.LimitV4 {
-			continue
-		}
-		if !familyV4 && cfg.LimitV6 > 0 && v6Count >= cfg.LimitV6 {
-			continue
-		}
-
-		if cfg.Limit > 0 && len(result) >= cfg.Limit {
-			break
-		}
-
-		result = append(result, p)
-
 		if familyV4 {
-			v4Count++
+			v4 = append(v4, p)
 		} else {
-			v6Count++
+			v6 = append(v6, p)
 		}
 	}
 
-	return result
+	// Aplicar limites individuais
+	if cfg.LimitV4 > 0 && len(v4) > cfg.LimitV4 {
+		v4 = v4[:cfg.LimitV4]
+	}
+
+	if cfg.LimitV6 > 0 && len(v6) > cfg.LimitV6 {
+		v6 = v6[:cfg.LimitV6]
+	}
+
+	// Aplicar limite global proporcional
+	if cfg.Limit > 0 {
+	
+	    half := cfg.Limit / 2
+	
+	    // Tentativa inicial 50/50
+	    v4Limit := half
+	    v6Limit := cfg.Limit - half
+	
+	    // Ajusta se não houver suficiente
+	    if v4Limit > len(v4) {
+	        v4Limit = len(v4)
+	    }
+	    if v6Limit > len(v6) {
+	        v6Limit = len(v6)
+	    }
+	
+	    totalSelected := v4Limit + v6Limit
+	
+	    // Se ainda não atingiu o limite, redistribui sobra
+	    if totalSelected < cfg.Limit {
+		
+	        remaining := cfg.Limit - totalSelected
+		
+	        // Primeiro tenta completar com IPv4
+	        if v4Limit < len(v4) {
+	            extra := len(v4) - v4Limit
+	            if extra > remaining {
+	                extra = remaining
+	            }
+	            v4Limit += extra
+	            remaining -= extra
+	        }
+		
+	        // Depois tenta completar com IPv6
+	        if remaining > 0 && v6Limit < len(v6) {
+	            extra := len(v6) - v6Limit
+	            if extra > remaining {
+	                extra = remaining
+	            }
+	            v6Limit += extra
+	        }
+	    }
+	
+	    v4 = v4[:v4Limit]
+	    v6 = v6[:v6Limit]
+	}
+
+	return append(v4, v6...)
 }
+
