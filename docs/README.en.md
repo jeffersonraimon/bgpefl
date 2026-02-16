@@ -154,7 +154,7 @@ bgpefl init --ip <IP> --cidr <CIDR> --int <INTERFACE> \
 bgpefl init \
   --ip 192.168.0.2 \
   --cidr 30 \
-  --int eth0 \
+  --int eth1 \
   --local-as 65001 \
   --neighbor 192.168.0.1 \
   --remote-as 65000
@@ -273,7 +273,7 @@ bgpefl stop --clear-rib --force
 bgpefl stop \
   --remove-ip 192.168.0.2 \
   --remove-cidr 30 \
-  --remove-int eth0
+  --remove-int eth1
 ```
 
 ---
