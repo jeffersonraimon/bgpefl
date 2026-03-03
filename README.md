@@ -61,8 +61,9 @@ cp bgpefl /usr/bin/bgpefl
 ## Binário já pronto (necessário instalar o GoBGPD)
 
 ```bash
-wget https://github.com/jeffersonraimon/bgpefl/releases/download/v1.0.2/bgpefl
+wget https://github.com/jeffersonraimon/bgpefl/releases/download/v1.0.3/bgpefl-v1.0.3
 apt install gobgpd
+mv bgpefl-v1.0.3 bgpefl
 chmod +x bgpefl
 mv bgpefl /usr/bin/bgpefl
 ```
