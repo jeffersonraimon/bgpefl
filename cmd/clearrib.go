@@ -62,7 +62,7 @@ func init() {
 
 	clearCmd.Flags().BoolVar(&clearV4, "ipv4", false, "Limpa apenas IPv4")
 	clearCmd.Flags().BoolVar(&clearV6, "ipv6", false, "Limpa apenas IPv6")
-	clearCmd.Flags().BoolVar(&stopforce, "force", false, "Usa del all direto")
+	clearCmd.Flags().BoolVar(&stopforce, "force", false, "Usa del all direto (default)")
 
 	rootCmd.AddCommand(clearCmd)
 }
