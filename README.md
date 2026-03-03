@@ -172,8 +172,7 @@ bgpefl clearrib [flags]
 Flags:
 |Flag	|Descrição|
 | ----- |-------- |
-|--soft	|Remove rota por rota (default)|
-|--force	|Usa del all direto|
+|--force	|Usa del all direto (default)|
 |--ipv4	|Remove apenas IPv4|
 |--ipv6	|Remove apenas IPv6|
 

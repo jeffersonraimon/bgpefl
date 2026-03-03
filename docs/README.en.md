@@ -214,8 +214,7 @@ bgpefl clearrib [flags]
 
 | Flag    | Description                         |
 | ------- | ----------------------------------- |
-| --soft  | Removes routes one by one (default) |
-| --force | Uses direct `del all`               |
+| --force | Uses direct `del all` (default)     |
 | --ipv4  | Removes IPv4 routes only            |
 | --ipv6  | Removes IPv6 routes only            |
 
