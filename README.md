@@ -88,7 +88,7 @@ unzip bgpefl-appliance_v1.0.2.zip
 ```bash
 bgpefl [command]
 ```
-Comandos disponíveis:
+### Comandos disponíveis:
 
 | Comando |	Descrição |
 | --------| --------- |
@@ -103,7 +103,7 @@ Comandos disponíveis:
 
 Cria a sessão BGP, configura IP na interface e sobe o gobgpd.
 
-Uso:
+### Uso:
 ```bash
 bgpefl init --ip <IP> --cidr <CIDR> --int <INTERFACE> \
             --local-as <LOCAL_AS> \
@@ -111,7 +111,7 @@ bgpefl init --ip <IP> --cidr <CIDR> --int <INTERFACE> \
             --remote-as <REMOTE_AS> \
             [--router-id <ROUTER_ID>]
 ```
-Flags obrigatórias:
+### Flags obrigatórias:
 |Flag	|Descrição|
 | ------ | ------ |
 |--ip	|Endereço IP da interface|
@@ -121,7 +121,13 @@ Flags obrigatórias:
 |--neighbor	|IP do vizinho|
 |--remote-as	|ASN remoto|
 
-Exemplo:
+O **Router-ID** é um parâmetro opcional.
+
+* Caso não seja configurado manualmente, será utilizado o endereço IPv4 da própria sessão.
+* Em novas sessões — inclusive **IPv6** — o valor configurado anteriormente será mantido, pois o **gobgpd** já estará em execução com um Router-ID definido.
+* Caso não exista nenhuma sessão IPv4 ativa, em sessões **IPv6** será utilizado o endereço padrão **10.99.99.99** como Router-ID.
+
+### Exemplo:
 ```bash
 bgpefl init \
   --ip 192.168.0.2 \
@@ -135,12 +141,12 @@ bgpefl init \
 
 Busca prefixos de um ASN em um servidor IRR e injeta no GoBGP.
 
-Uso:
+### Uso:
 ```bash
 bgpefl gen --as <ASN> [flags]
 ```
 
-Flags:
+### Flags:
 |Flag	|Descrição|
 | ------ | ------ |
 |--as	|ASN para buscar prefixos|
@@ -154,7 +160,7 @@ Flags:
 |--only-v4	|Apenas IPv4|
 |--only-v6	|Apenas IPv6|
 
-Exemplo:
+### Exemplo:
 ```bash
 bgpefl gen --as 15169 --limit 100
 ```
@@ -166,11 +172,11 @@ bgpefl gen --as 13335 --dry-run
 
 Remove rotas atualmente injetadas no GoBGP.
 
-Uso:
+### Uso:
 ```bash
 bgpefl clearrib [flags]
 ```
-Flags:
+### Flags:
 |Flag	|Descrição|
 | ----- |-------- |
 |--force	|Usa del all direto (default)|
@@ -185,7 +191,7 @@ Mostra o estado atual do BGPEFL e informações do GoBGPD.
 ```bash
 bgpefl status
 ```
-Exemplo de saída:
+### Exemplo de saída:
 ```bash
 ========== BGPEFL STATUS ==========
 gobgpd: STOPPED
@@ -195,11 +201,11 @@ gobgpd: STOPPED
 
 Finaliza o gobgpd e pode opcionalmente limpar rotas e remover IP da interface.
 
-Uso:
+### Uso:
 ```bash
 bgpefl stop [flags]
 ```
-Flags:
+### Flags:
 |Flag |	Descrição|
 | ---- | ------- |
 |--clear-rib	|Remove todas as rotas|
@@ -208,11 +214,11 @@ Flags:
 |--remove-cidr	|CIDR do IP|
 |--remove-int	|Interface para remover IP|
 
-Exemplo:
+### Exemplo:
 ```bash
 bgpefl stop --clear-rib --force
 ```
-Removendo IP da interface:
+### Removendo IP da interface:
 ```bash
 bgpefl stop \
   --remove-ip 192.168.0.2 \
@@ -221,27 +227,27 @@ bgpefl stop \
 ```
 ## 🧠 Fluxo Recomendado
 
-Inicializar sessão BGP:
+### Inicializar sessão BGP:
 ```bash
 bgpefl init ...
 ```
 
-Gerar prefixos:
+### Gerar prefixos:
 ```bash
 bgpefl gen --as <ASN> --limit 20
 ```
 
-Verificar status:
+### Verificar status:
 ```bash
 bgpefl status
 ```
 
-Limpar rotas (se necessário):
+### Limpar rotas (se necessário):
 ```bash
 bgpefl clearrib
 ```
 
-Parar ambiente:
+### Parar ambiente:
 ```bash
 bgpefl stop
 ```
@@ -261,7 +267,7 @@ bgpefl stop
 
 Este projeto é destinado exclusivamente para ambientes de laboratório.
 
-Não utilize para:
+### Não utilize para:
 
 - Anunciar prefixos reais na Internet
 

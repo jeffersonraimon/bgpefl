@@ -149,6 +149,13 @@ bgpefl init --ip <IP> --cidr <CIDR> --int <INTERFACE> \
 | --neighbor  | Neighbor IP address  |
 | --remote-as | Remote ASN           |
 
+The **Router-ID** is an optional parameter.
+
+* If it is not manually configured, the IPv4 address of the session itself will be used.
+* For new sessions — including **IPv6** — the previously defined value will be kept, since **gobgpd** is already running with a configured Router-ID.
+* If there is no active IPv4 session, **IPv6** sessions will use the default address **10.99.99.99** as the Router-ID.
+
+
 ### Example:
 
 ```bash
