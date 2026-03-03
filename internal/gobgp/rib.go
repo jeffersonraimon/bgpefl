@@ -79,31 +79,4 @@ func GetRIBJSON(family string) ([]RibEntry, error) {
 	return entries, nil
 }
 
-func ClearRIBSoft(family string) error {
 
-	entries, err := GetRIBJSON(family)
-	if err != nil {
-		return err
-	}
-
-	seen := make(map[string]bool)
-
-	for _, e := range entries {
-
-		if e.Prefix == "" {
-			continue
-		}
-
-		if seen[e.Prefix] {
-			continue
-		}
-
-		seen[e.Prefix] = true
-
-		exec.Command("gobgp", "global", "rib", "-a",
-			family, "del",
-			e.Prefix).Run()
-	}
-
-	return nil
-}

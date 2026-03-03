@@ -45,11 +45,11 @@ var clearCmd = &cobra.Command{
 		} else {
 			if clearV4 {
 				fmt.Println("Removendo rotas IPv4...")
-				gobgp.ClearRIBSoft("ipv4")
+				gobgp.ClearRIB("ipv4")
 			}
 			if clearV6 {
 				fmt.Println("Removendo rotas IPv6...")
-				gobgp.ClearRIBSoft("ipv6")
+				gobgp.ClearRIB("ipv6")
 			}
 		}
 
@@ -62,7 +62,6 @@ func init() {
 
 	clearCmd.Flags().BoolVar(&clearV4, "ipv4", false, "Limpa apenas IPv4")
 	clearCmd.Flags().BoolVar(&clearV6, "ipv6", false, "Limpa apenas IPv6")
-	clearCmd.Flags().BoolVar(&soft, "soft", false, "Remove rota por rota (default)")
 	clearCmd.Flags().BoolVar(&stopforce, "force", false, "Usa del all direto")
 
 	rootCmd.AddCommand(clearCmd)
