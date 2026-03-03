@@ -32,7 +32,7 @@ func GetGlobalAS() (uint32, error) {
 		return 0, err
 	}
 
-	// Procura algo como: "AS: 52872"
+	// Procura algo como: "AS: 3356"
 	re := regexp.MustCompile(`AS:\s+(\d+)`)
 	matches := re.FindStringSubmatch(out.String())
 	if len(matches) < 2 {

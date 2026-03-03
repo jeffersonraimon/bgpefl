@@ -41,12 +41,14 @@ var initCmd = &cobra.Command{
 			if ipParsed == nil {
 				return fmt.Errorf("IP inválido")
 			}
-
+		
+			// Se for IPv6
 			if ipParsed.To4() == nil {
-				return fmt.Errorf("IPv6 exige --router-id manual (router-id precisa ser IPv4)")
+				routerID = "10.99.99.99"
+			} else {
+				// Se for IPv4, usa o próprio IP como router-id
+				routerID = ipAddr
 			}
-
-			routerID = ipAddr
 		}
 
         running := gobgp.IsRunning()
