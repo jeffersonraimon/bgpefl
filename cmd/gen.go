@@ -6,6 +6,7 @@ import (
 	"github.com/jeffersonraimon/bgpefl/internal/filter"
 	"github.com/jeffersonraimon/bgpefl/internal/gobgp"
 	"github.com/jeffersonraimon/bgpefl/internal/irr"
+	"github.com/jeffersonraimon/bgpefl/internal/netutil"
 
 	"github.com/spf13/cobra"
 )
@@ -21,6 +22,7 @@ var (
 	minV6    int
 	dryRun   bool
 	irrHost  string
+	installKernel bool
 )
 
 var genCmd = &cobra.Command{
@@ -70,6 +72,9 @@ var genCmd = &cobra.Command{
 			} else {
 				v6++
 			}
+			if installKernel {
+    		    netutil.AddRoute(p)
+		   }
 		}
 
 		fmt.Println("\n========== RESUMO ==========")
@@ -94,6 +99,7 @@ func init() {
 	genCmd.Flags().IntVar(&minV6, "min-v6", 0, "Prefixo mínimo IPv6")
 	genCmd.Flags().BoolVar(&dryRun, "dry-run", false, "Não adiciona no gobgp")
 	genCmd.Flags().StringVar(&irrHost, "irr", "whois.radb.net", "Servidor IRR")
+	genCmd.Flags().BoolVar(&installKernel, "kernel", false, "Instala rotas no kernel")
 
 	genCmd.MarkFlagRequired("as")
 
