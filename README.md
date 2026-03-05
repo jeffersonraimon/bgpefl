@@ -61,9 +61,9 @@ cp bgpefl /usr/bin/bgpefl
 ## Binário já pronto (necessário instalar o GoBGPD)
 
 ```bash
-wget https://github.com/jeffersonraimon/bgpefl/releases/download/v1.0.3/bgpefl-v1.0.3
+wget https://github.com/jeffersonraimon/bgpefl/releases/download/v1.0.4/bgpefl-v1.0.4
 apt install gobgpd
-mv bgpefl-v1.0.3 bgpefl
+mv bgpefl-v1.0.4 bgpefl
 chmod +x bgpefl
 mv bgpefl /usr/bin/bgpefl
 ```
@@ -77,8 +77,8 @@ Imagem qemu leve do Alpine 3.20.3 já com o BGPEFL instalado e pronto para uso
 ### Como instalar
 No EVE-NG/PNETLAB Host:
 ```bash
-wget https://github.com/jeffersonraimon/bgpefl/releases/download/v1.0.3/bgpefl-appliance_v1.0.3.zip
-unzip bgpefl-appliance_v1.0.3.zip
+wget https://github.com/jeffersonraimon/bgpefl/releases/download/v1.0.4/bgpefl-appliance_v1.0.4.zip
+unzip bgpefl-appliance_v1.0.4.zip
 ```
 - Mova a pasta para `/opt/unetlab/addons/qemu/` 
 - Coloque o arquivo `.yml` em `pt/unetlab/html/templates/amd` ou `/opt/unetlab/html/templates/intel`
