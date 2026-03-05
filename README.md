@@ -159,6 +159,7 @@ bgpefl gen --as <ASN> [flags]
 |--min-v6	|Prefixo mínimo IPv6|
 |--only-v4	|Apenas IPv4|
 |--only-v6	|Apenas IPv6|
+|--kernel | Instalas os prefixos no kernel (para testes de ping) |
 
 ### Exemplo:
 ```bash
