@@ -5,6 +5,7 @@ import (
 
 	"github.com/jeffersonraimon/bgpefl/internal/gobgp"
 	"github.com/jeffersonraimon/bgpefl/internal/system"
+	"github.com/jeffersonraimon/bgpefl/internal/netutil"
 
 	"github.com/spf13/cobra"
 )
@@ -37,19 +38,23 @@ var clearCmd = &cobra.Command{
 			if clearV4 {
 				fmt.Println("Removendo todas rotas IPv4...")
 				gobgp.ClearRIB("ipv4")
+				netutil.ClearProgramLocalRoutesByVersion(netutil.IPv4)
 			}
 			if clearV6 {
 				fmt.Println("Removendo todas rotas IPv6...")
 				gobgp.ClearRIB("ipv6")
+				netutil.ClearProgramLocalRoutesByVersion(netutil.IPv6)
 			}
 		} else {
 			if clearV4 {
 				fmt.Println("Removendo rotas IPv4...")
 				gobgp.ClearRIB("ipv4")
+				netutil.ClearProgramLocalRoutesByVersion(netutil.IPv4)
 			}
 			if clearV6 {
 				fmt.Println("Removendo rotas IPv6...")
 				gobgp.ClearRIB("ipv6")
+				netutil.ClearProgramLocalRoutesByVersion(netutil.IPv6)
 			}
 		}
 
